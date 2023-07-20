@@ -1,0 +1,54 @@
+import logging
+import random
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, CallbackContext
+
+# Your Telegram bot token from BotFather
+TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+
+# Set up logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+# List of creative ideas
+IDEAS = [
+    'Write a short story about a time-traveling cat.',
+    'Create a painting using only your favorite colors.',
+    'Design a new board game for friends and family to enjoy.',
+    'Record a podcast about your favorite hobbies and interests.',
+    'Craft handmade greeting cards for your loved ones.',
+    'Cook a unique recipe using ingredients you have at home.',
+    'Write a poem inspired by nature and the outdoors.',
+    'Start a blog to share your thoughts and experiences.',
+    'Compose a song and perform it for friends or on social media.',
+    'Organize a virtual event or workshop on a topic you are passionate about.'
+]
+
+# Command handler for /start
+def start(update: Update, _: CallbackContext) -> None:
+    user = update.effective_user
+    update.message.reply_text(f'Hello, {user.mention_html()}! I am your Idea Generator bot. '
+                              f'Use /idea to get a random creative idea.')
+
+# Command handler for /idea
+def generate_idea(update: Update, _: CallbackContext) -> None:
+    idea = random.choice(IDEAS)
+    update.message.reply_text(f'Your creative idea is:\n{idea}')
+
+def main() -> None:
+    updater = Updater(TOKEN)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
+
+    # Register command handlers
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("idea", generate_idea))
+
+    # Start the Bot
+    updater.start_polling()
+
+    # Run the bot until the user presses Ctrl-C
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
